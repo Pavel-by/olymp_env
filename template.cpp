@@ -37,7 +37,7 @@ int main()
   // OVERRIDE_INPUT("input.txt");
   // OVERRIDE_OUTPUT("output.txt");
 
-  SOLVE_TESTS(true);
+  SOLVE_TESTS(false);
   return 0;
 }
 
