@@ -6,7 +6,7 @@ using namespace std;
 #define ll long long
 #define pb push_back
 #define fcout cout << fixed << setprecision(27)
-#define _hash (1e9 + 9)
+#define MOD (1e9 + 7)
 #define _for(name, start, end) for (int name = start; name < end; name++)
 
 #define DESYNC_IO_STREAMS  \
