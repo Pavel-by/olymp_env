@@ -1,7 +1,31 @@
 {
   "files.associations": {
     "typeindex": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "deque": "cpp",
+    "string": "cpp",
+    "vector": "cpp",
+    "*.tcc": "cpp",
+    "complex": "cpp",
+    "bitset": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp",
+    "functional": "cpp",
+    "memory_resource": "cpp",
+    "algorithm": "cpp",
+    "random": "cpp",
+    "future": "cpp",
+    "istream": "cpp",
+    "numeric": "cpp",
+    "scoped_allocator": "cpp",
+    "cmath": "cpp",
+    "regex": "cpp",
+    "tuple": "cpp",
+    "utility": "cpp",
+    "type_traits": "cpp",
+    "cstddef": "cpp"
   },
 	"cmake.debugConfig": {
 		"cwd": "${workspaceFolder}"
