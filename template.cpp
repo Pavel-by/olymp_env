@@ -4,6 +4,10 @@ using namespace std;
 
 #define ld long double
 #define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pdd pair<double, double>
+#define pdl pair<ld, ld>
 #define pb push_back
 #define fcout cout << fixed << setprecision(27)
 #define MOD (1e9 + 7)
