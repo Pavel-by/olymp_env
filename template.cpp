@@ -72,6 +72,21 @@ int bsearch(const T &key, const vector<T> &v, bsearch_policy policy = EQ)
   return bsearch(key, v, policy, less<T>());
 }
 
+// iterate prime numbers excluding 1
+template<int Max, typename Iterator>
+void iterate_primes(Iterator iterator) {
+  int grid[Max];
+  memset(grid, 0, sizeof(int) * Max);
+  _for(i, 1, Max) {
+    if (!grid[i]) {
+      iterator(i + 1);
+      for (int j = i; j < Max; j += i + 1) {
+        grid[j] = 1;
+      }
+    }
+  }
+}
+
 void solve();
 
 int main()
