@@ -25,7 +25,10 @@
     "tuple": "cpp",
     "utility": "cpp",
     "type_traits": "cpp",
-    "cstddef": "cpp"
+    "cstddef": "cpp",
+    "array": "cpp",
+    "string_view": "cpp",
+    "initializer_list": "cpp"
   },
 	"cmake.debugConfig": {
 		"cwd": "${workspaceFolder}"
