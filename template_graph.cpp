@@ -137,3 +137,68 @@ inline void graph_dfs(const GraphErasable& graph, int startNodeIdx, Visitor visi
 }
 
 /* -------------- ----- --- -------------- */
+
+/* -------------- GRAPH ACCUMULATOR --------------*/
+
+template<typename NodeAccumulator, typename EdgeAccumulator, typename Node, typename AddToNode, typename SubFromNode, typename AccumulateToEdge>
+void graph_accumulate(const vector<Node>& nodes, vector<NodeAccumulator>& nodesAccumulators, AddToNode addToNode, SubFromNode subFromNode, AccumulateToEdge accumulateToEdge) {
+  if (nodesAccumulators.size() != nodes.size()) {
+    cout << "INVALID nodesAccumulators SIZE" << endl;
+    return;
+  }
+  vector<map<int, EdgeAccumulator>> edgesAccumulators(nodes.size());
+
+  vector<bool> isInitialized(nodes.size(), false);
+  vector<bool> isPreFinished(nodes.size(), false);
+  vector<bool> isFinished(nodes.size(), false);
+
+  vector<int> stack;
+  vector<bool> isInStack(nodes.size(), false);
+
+#define stack_push(id) { if (!isInStack[id]) { stack.push_back(id); isInStack[id] = true; } }
+#define stack_pop() { isInStack[stack.back()] = false; stack.pop_back(); }
+
+  stack_push(0);
+  while (stack.size()) {
+    int curNodeId = stack.back(); stack_pop();
+    const Node& node = nodes[curNodeId];
+    if (!isInitialized[curNodeId]) {
+      isInitialized[curNodeId] = true;
+      for (int edge : nodes[curNodeId].edges)
+        if (!isInitialized[edge])
+          stack_push(edge);
+    }
+    if (!isPreFinished[curNodeId] && node.edges.size()-1 == edgesAccumulators[curNodeId].size()) {
+      isPreFinished[curNodeId] = true;
+      for (int edge : nodes[curNodeId].edges) {
+        if (!edgesAccumulators[curNodeId].count(edge)) {
+          if (edgesAccumulators[edge].count(curNodeId)) break;
+          EdgeAccumulator edgeAccumulator;
+          accumulateToEdge(edgeAccumulator, nodes[curNodeId], nodesAccumulators[curNodeId]);
+          addToNode(nodesAccumulators[edge], edgeAccumulator);
+          edgesAccumulators[edge][curNodeId] = edgeAccumulator;
+          stack_push(edge);
+          break;
+        }
+      }
+    }
+    if (!isFinished[curNodeId] && node.edges.size() == edgesAccumulators[curNodeId].size()) {
+      isFinished[curNodeId] = true;
+      for (int edge : nodes[curNodeId].edges) {
+        if (edgesAccumulators[edge].count(curNodeId)) continue;
+        NodeAccumulator nodeAccumulator = nodesAccumulators[curNodeId];
+        subFromNode(nodeAccumulator, edgesAccumulators[curNodeId][edge]);
+        EdgeAccumulator edgeAccumulator;
+        accumulateToEdge(edgeAccumulator, nodes[curNodeId], nodeAccumulator);
+        addToNode(nodesAccumulators[edge], edgeAccumulator);
+        edgesAccumulators[edge][curNodeId] = edgeAccumulator;
+        stack_push(edge);
+      }
+    }
+  }
+
+#undef stack_push
+#undef stack_pop
+}
+
+/* -------------- ----- ----------- --------------*/
