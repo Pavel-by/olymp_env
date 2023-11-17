@@ -202,3 +202,44 @@ void graph_accumulate(const vector<Node>& nodes, vector<NodeAccumulator>& nodesA
 }
 
 /* -------------- ----- ----------- --------------*/
+
+/* ------------- DFS -------------- */
+
+struct DfsSettings
+{
+  int startNodeIdx;
+  bool canVisitParent;
+};
+
+vector<int> __dfs_stack;
+vector<int> __dfs_visited;
+
+template<typename T, typename NodeVisitor, typename EdgeVisitor>
+void dfs(const vector<T> &nodes, NodeVisitor nodeVisitor, EdgeVisitor edgeVisitor, DfsSettings settings)
+{
+  __dfs_stack.clear();
+  __dfs_visited.resize(nodes.size());
+  fill(__dfs_visited.begin(), __dfs_visited.end(), 0);
+  __dfs_stack.push_back(settings.startNodeIdx);
+  while (!__dfs_stack.empty())
+  {
+    int cur = __dfs_stack.back();
+    if (!__dfs_visited[cur])
+      nodeVisitor(cur);
+    if (__dfs_visited[cur] >= nodes[cur].edges.size())
+    {
+      __dfs_visited[cur]++;
+      __dfs_stack.pop_back();
+      continue;
+    }
+    int prev = __dfs_stack.size() > 1 ? __dfs_stack[__dfs_stack.size() - 2] : -1;
+    int edge = nodes[cur].edges[__dfs_visited[cur]++];
+    if (settings.canVisitParent || prev != edge)
+    {
+      edgeVisitor(cur, edge);
+      __dfs_stack.push_back(edge);
+    }
+  }
+}
+
+/* ------------- --- -------------- */
