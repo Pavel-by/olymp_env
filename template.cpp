@@ -11,6 +11,8 @@ using namespace std;
 #define pb push_back
 #define fcout cout << fixed << setprecision(27)
 #define MOD (1e9 + 7)
+constexpr int64_t INT64_XFE_NEG = 0xfefefefefefefefe;
+constexpr int64_t INT64_XFE_POS = 0x7efefefefefefefe;
 #define _for(name, start, end) for (int name = start; name < end; name++)
 
 #define DESYNC_IO_STREAMS  \
