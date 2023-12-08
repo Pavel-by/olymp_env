@@ -134,3 +134,98 @@ void example_binary_tree() {
   idx = btree_find_idx(data, cache, 0, accumulate, makeChecker(5));
   cout << idx << endl; // idx == 5
 }
+
+/* --------------- MERGE SORT TREE ---------------- */
+
+template<typename T>
+struct MergeSortTree
+{
+private:
+  vector<vector<T>> tree;
+
+public:
+  void build(const vector<T> &data)
+  {
+    build(data, less());
+  }
+
+  template<typename Comparator>
+  void build(const vector<T> &data, Comparator comp)
+  {
+    tree.clear();
+    tree.push_back(data);
+
+    int cnt = 1;
+    while (cnt < data.size()) {
+      cnt = cnt * 2;
+      tree.push_back(data);
+      const auto& prev = tree[tree.size() - 2];
+      auto& cur = tree[tree.size() - 1];
+      for (auto i = 0; i < cur.size(); i += cnt)
+      {
+        auto prev_left = prev.begin() + i,
+             prev_middle = prev.begin() + min(i + cnt / 2, (int)prev.size()),
+             prev_right = prev.begin() + min(i + cnt, (int)prev.size());
+        auto cur_left = cur.begin() + i;
+        merge(prev_left, prev_middle,
+              prev_middle, prev_right,
+              cur_left, comp);
+      }
+    }
+  }
+
+  template<typename Comparator>
+  int get_count(int l, int r, const T &lx, const T &rx, Comparator comp)
+  {
+    return get_count((int)tree.size() - 1, 0, l, r, lx, rx, comp);
+  }
+
+  template<typename Comparator>
+  int get_count(int level, int start, int l, int r, const T &lx, const T &rx, Comparator comp)
+  {
+    if (r <= l)
+      return 0;
+    if (start >= tree.front().size())
+      return 0;
+    int cnt = 1 << level;
+    int middle = min(start + cnt / 2, (int)tree.front().size()), end = min(start + cnt, (int)tree.front().size());
+    if (start >= l && end <= r)
+    {
+      auto iStart = tree[level].begin() + start;
+      auto iEnd = tree[level].begin() + end;
+      return (end - start)
+        - (lower_bound(iStart, iEnd, lx, comp) - iStart)
+        - (iEnd - upper_bound(iStart, iEnd, rx, comp));
+    }
+    if (start >= r || end <= l)
+      return 0;
+    return get_count(level - 1, start, l, r, lx, rx, comp)
+      + get_count(level - 1, middle, l, r, lx, rx, comp);
+  }
+};
+
+// input:
+// 8 2
+// 0 0 0 3 5 2 6 0
+// 0 8 0 2
+// 2 4 3 3
+//
+// output:
+// 5
+// 1
+void MergeSortTree_example()
+{
+  int n,m; cin>>n>>m;
+  vector<int> data(n);
+  for(int i=0; i<n; i++) cin>>data[i];
+  MergeSortTree<int> tree;
+  tree.build(data, less());
+
+  for(int i=0; i<m; i++)
+  {
+    int l,r,lx,rx; cin>>l>>r>>lx>>rx;
+    cout << tree.get_count(l, r, lx, rx, less()) << endl;
+  }
+}
+
+/* --------------- ----- ---- ---- ---------------- */
